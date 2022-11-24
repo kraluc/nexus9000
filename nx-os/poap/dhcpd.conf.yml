@@ -1,0 +1,153 @@
+#
+# DHCP Server Configuration file.
+#   see /usr/share/doc/dhcp-server/dhcpd.conf.example
+#   see dhcpd.conf(5) man page
+#
+allow unknown-clients;
+default-lease-time 1800;
+max-lease-time 7200;
+
+authoritative;
+ddns-update-style none;
+log-facility local7;
+
+# Global configuration for NAT Subnet (same as VMWare Fusion)
+subnet 172.16.139.0 netmask 255.255.255.0 {
+	range 172.16.139.15 172.16.139.100;
+	option broadcast-address 172.16.139.255;
+	option domain-name-servers 172.16.139.2;
+	option domain-name localdomain;
+	default-lease-time 1800;                # default is 30 minutes
+	max-lease-time 7200;                    # default is 2 hours
+	option netbios-name-servers 172.16.139.2;
+	option routers 172.16.139.2;
+}
+host centos8_ens160 {
+    hardware ethernet 00:50:56:26:38:86;
+    fixed-address 172.16.139.200;
+    option domain-name-servers 8.8.8.8;
+    option domain-name "vricci-m-t0p7.private";
+    option routers 172.16.139.2;
+}
+host vmnet8 {
+	hardware ethernet 00:50:56:C0:00:08;
+	fixed-address 172.16.139.1;
+	option domain-name-servers 0.0.0.0;
+	option domain-name "";
+	option routers 0.0.0.0;
+}
+
+# Global configuration for Private Subnet
+subnet 172.16.125.0 netmask 255.255.255.0 {
+    range 172.16.125.15 172.16.125.100;
+    option subnet-mask 255.255.255.0;
+    option broadcast-address 172.16.125.255;
+    option domain-name-servers 172.16.125.200;
+    option domain-name localdomain;
+    default-lease-time 1800;
+    max-lease-time 7200;
+    option netbios-name-servers 172.16.125.1;
+    option routers 172.16.125.1;
+}
+host vmnet1 {
+        hardware ethernet 8a:66:5a:73:a1:65;
+	fixed-address 172.16.125.1;
+	option domain-name-servers 0.0.0.0;
+	option domain-name "";
+	option routers 172.16.125.2;
+}
+host centos8_ens192 {
+    hardware ethernet 00:50:56:30:c6:80;
+    fixed-address 172.16.125.200;
+}
+
+# Group Specific configuration e.g. static hosts and overriden configs
+
+## HTTP POAP
+#group {
+#    # POAP stuff
+#    filename "poap_139.py";
+#    option bootfile-name "poap_139.py";
+#    # If you use a TFTP server... set the server-name IP
+#    # server-name "172.16.139.200";
+#    # IF you use HTTP server... set the full URL instead (remove #)
+#    server-name "http://172.16.139.200";
+#
+#    host n9k_mgmt0 {
+#        hardware ethernet 00:0c:29:cb:d8:70;
+#        fixed-address 172.16.139.9;
+#        # client hostname if the script uses 'hostname' configuration mode
+#        option host-name "9Kv_10_3_1"; 
+#    }
+#}
+#group {
+#    # POAP stuff
+#    filename "poap_125.py";
+#    option bootfile-name "poap_125.py";
+#    # If you use a TFTP server... set the server-name IP
+#    # server-name "172.16.125.200";
+#    # IF you use HTTP server... set the full URL instead (remove #)
+#    server-name "http://172.16.125.200";
+#
+#    host n9k_Eth1-1 {
+#        hardware ethernet 00:cb:d8:70:1b:08;
+#        fixed-address 172.16.125.9;
+#        # client hostname if the script uses 'hostname' configuration mode
+#        option host-name "9Kv_10_3_1"; 
+#
+#    }
+#}
+## HTTP POAP WITH YAML FILE   poap_yml_125.py
+group {
+    # POAP stuff
+    filename "poap_yml_125.py";
+    option bootfile-name "poap_yml_125.py";
+    # If you use a TFTP server... set the server-name IP
+    # server-name "172.16.125.200";
+    # IF you use HTTP server... set the full URL instead (remove #)
+    server-name "http://172.16.125.200";
+
+    host n9k_Eth1-1 {
+        hardware ethernet 00:cb:d8:70:1b:08;
+        fixed-address 172.16.125.9;
+        # client hostname if the script uses 'hostname' configuration mode
+        # since we use YAML file to set the target image, we dont specify the version
+#        option host-name "9Kv_10_2_3"; 
+        option host-name "9Kv"; 
+
+    }
+}
+### FTP POAP (note that they point to an older NXOS version!)
+#group {
+#    # POAP stuff
+#    filename "poap_ftp_139.py";
+#    option bootfile-name "poap_ftp_139.py";
+#    # If you use a TFTP server... set the server-name IP
+#    # server-name "172.16.139.200";
+#    # IF you use HTTP server... set the full URL instead (remove #)
+#    server-name "http://172.16.139.200";
+#
+#    host n9k_mgmt0 {
+#        hardware ethernet 00:0c:29:cb:d8:70;
+#        fixed-address 172.16.139.9;
+#        # client hostname if the script uses 'hostname' configuration mode
+#        option host-name "9Kv_10_2_3"; 
+#    }
+#}
+#
+#group {
+#    # POAP stuff
+#    filename "poap_ftp_125.py";
+#    option bootfile-name "poap_ftp_125.py";
+#    # If you use a TFTP server... set the server-name IP
+#    # server-name "172.16.125.200";
+#    # IF you use HTTP server... set the full URL instead (remove #)
+#    server-name "http://172.16.125.200";
+#
+#    host n9k_Eth1-1 {
+#        hardware ethernet 00:cb:d8:70:1b:08;
+#        fixed-address 172.16.125.9;
+#        # client hostname if the script uses 'hostname' configuration mode
+#        option host-name "9Kv_10_2_3"; 
+#    }
+#}
