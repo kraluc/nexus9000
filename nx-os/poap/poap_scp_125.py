@@ -1,5 +1,5 @@
 #!/bin/env python3
-#md5sum="45cc8b0f4da0ccd9d6ce87116f570446"
+#md5sum="9abdce3d348cdede70413ee9b85e2c0f"
 """
 If any changes are made to this script, please run the below command
 in bash shell to update the above md5sum. This is used for integrity check.
@@ -14,7 +14,12 @@ f=poap_125.py ; cat $f | sed '/^#md5sum/d' > $f.md5 ; sed -i \
 "s/^#md5sum=.*/#md5sum=\"$(md5sum $f.md5 | sed 's/ .*//')\"/" $f
 f=poap_139.py ; cat $f | sed '/^#md5sum/d' > $f.md5 ; sed -i \
 "s/^#md5sum=.*/#md5sum=\"$(md5sum $f.md5 | sed 's/ .*//')\"/" $f
-On macOS - define md5sum() { md5 -r "$@";}
+On macOS:
+- define md5sum() { md5 -r "$@";}
+- replace sed -i with sed -i '' (add empty extension)
+https://stackoverflow.com/questions/39325759/sed-on-mac-extra-characters-after-p-command
+f=poap_125.py ; cat $f | sed '/^#md5sum/d' > $f.md5 ; sed -i '' \
+"s/^#md5sum=.*/#md5sum=\"$(md5sum $f.md5 | sed 's/ .*//')\"/" $f
 """
 
 import glob
